@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { doc, setDoc, getFirestore, getDoc } from "firebase/firestore";
 
+import { MapInfoWindow, MapMarker } from '@angular/google-maps';
 
 @Component({
   selector: 'app-map',
@@ -8,10 +9,19 @@ import { doc, setDoc, getFirestore, getDoc } from "firebase/firestore";
   styleUrls: ['./map.component.css']
 })
 export class MapComponent implements OnInit {
-
+  @ViewChild(MapInfoWindow) infoWindow: MapInfoWindow | undefined;
   firestore = getFirestore();
 
-  constructor() { }
+  options: google.maps.MapOptions = {
+    center: { lat: -30, lng: 133.3 },
+    zoom: 4
+  };
+
+  markerOptions: google.maps.MarkerOptions = { draggable: false };
+  markerPositions: google.maps.LatLngLiteral[] = [];
+
+  constructor() {
+  }
 
   ngOnInit(): void {
     this.addDoc()
@@ -36,6 +46,19 @@ export class MapComponent implements OnInit {
     } else {
       // doc.data() will be undefined in this case
       console.log("No such document!");
+    }
+  }
+
+  addMarker(event: google.maps.MapMouseEvent) {
+    if (event.latLng != null) {
+      this.markerPositions.push(event.latLng.toJSON());
+    }
+
+  }
+
+  openInfoWindow(marker: MapMarker) {
+    if (this.infoWindow != undefined) {
+      this.infoWindow.open(marker);
     }
   }
 
