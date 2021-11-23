@@ -1,0 +1,23 @@
+<div class="container pt-5">
+    <p>Add Animal</p>
+    <div class="form-group">
+        <label for="formGroupExampleInput">Animal Name</label>
+        <input [value]="animal.name" (input)="animal.name=getValue($event)" class="form-control">
+    </div>
+    <div class="form-group py-3">
+        <label for="formGroupExampleInput2">Animal Description</label>
+        <input [value]="animal.description" (input)="animal.description=getValue($event)" class="form-control">
+    </div>
+
+    <google-map #map width="100%" height="300px" [center]="center" [zoom]="zoom" [options]="options">
+        <map-marker [options]="markerPosition" (mapDragend)="drag($event)"></map-marker>
+    </google-map>
+    <div class="alert alert-danger" role="alert" *ngIf="errorMessage != ''">
+        {{errorMessage}}
+    </div>
+
+    <div class="alert alert-success" role="alert" *ngIf="success">
+        Successfully added Membership
+    </div>
+    <button type="submit" class="btn btn-success my-3" (click)="submit()">Submit</button>
+</div>

@@ -1,0 +1,35 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+      <a class="navbar-brand" routerLink="">PBCC</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+        aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav me-auto">
+          <a class="nav-link" routerLink="">Home</a> <!-- todo have navbar page move to active page aria-current="page" -->
+          <a class="nav-link" routerLink="/create">Add Animal</a>
+        </div>
+        
+        <!--<span class="navbar-text float-right">
+          <div *ngIf="auth.user$ | async; then authenticated; else unauthenticated" class="text-light">
+    
+          </div>
+    
+          <ng-template #authenticated>
+            <div *ngIf="auth.user$ | async as user" class="text-light">
+              Welcome {{user.displayName}} | <a routerLink = "" class="text-light" (click)="auth.signOut()">Sign Out</a>
+            </div>
+          </ng-template>
+    
+          <ng-template #unauthenticated>
+            <div class="text-light">
+              <a (click)="auth.googleSignin()" class="text-light" routerLink = "">Sign in</a>
+            </div>
+          </ng-template>
+        </span> -->
+      </div>
+    </div>
+  </nav>
+  
+  
