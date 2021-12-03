@@ -19,6 +19,7 @@ export class MapComponent implements OnInit {
   options: google.maps.MapOptions = {
     center: { lat: -30, lng: 133.3 },
     zoom: 4,
+    streetViewControl: false
   };
 
   center = { lat: -30, lng: 133.3 };

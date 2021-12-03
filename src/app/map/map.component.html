@@ -4,7 +4,7 @@
     <map-circle [center]="center" [radius]="50000"></map-circle>
     <map-marker #marker="mapMarker" *ngFor="let markerPosition of markerOptions" [options]="markerPosition"
         (mapClick)="openInfoWindow(marker, markerPosition.title)"></map-marker>
-    <map-info-window>{{infoContent}}</map-info-window>
+    <map-info-window><app-view-animal></app-view-animal></map-info-window>
 </google-map>
 
 <button type="submit" class="btn btn-success my-3" (click)="search()">Submit</button>

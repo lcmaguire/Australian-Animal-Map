@@ -8,13 +8,15 @@ import { MapComponent } from './map/map.component';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { NavbarComponent } from './navbar/navbar.component';
 import { CreateAnimalComponent } from './create-animal/create-animal.component';
+import { ViewAnimalComponent } from './view-animal/view-animal.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     MapComponent,
     NavbarComponent,
-    CreateAnimalComponent
+    CreateAnimalComponent,
+    ViewAnimalComponent
   ],
   imports: [
     BrowserModule,
