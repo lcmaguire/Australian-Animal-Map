@@ -6,6 +6,7 @@ import { environment } from './environments/environment';
 
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
+import { getStorage } from "firebase/storage";
 
 if (environment.production) {
   enableProdMode();
@@ -17,3 +18,4 @@ platformBrowserDynamic().bootstrapModule(AppModule)
 // Initialize Firebase
 const app = initializeApp(environment.firebaseConfig);
 const analytics = getAnalytics(app);
+const storage = getStorage(app);

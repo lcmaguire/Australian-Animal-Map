@@ -1,0 +1,10 @@
+<div *ngFor = "let type of types" class = "py-2">
+    <div class="card text-white bg-success mb-3" style="max-width: 18rem;">
+        <div class="card-header">{{type?.name}} {{type?.emoji}}</div>
+        <div class="card-body">
+          <!--<h5 class="card-title">Success card title</h5>-->
+          <p class="card-text">{{type?.description}}</p>
+        </div>
+      </div>
+</div>
+<app-create-type></app-create-type>

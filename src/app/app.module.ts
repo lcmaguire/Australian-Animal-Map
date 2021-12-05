@@ -9,6 +9,8 @@ import { GoogleMapsModule } from '@angular/google-maps';
 import { NavbarComponent } from './navbar/navbar.component';
 import { CreateAnimalComponent } from './create-animal/create-animal.component';
 import { ViewAnimalComponent } from './view-animal/view-animal.component';
+import { ListTypesComponent } from './types/list-types/list-types.component';
+import { CreateTypeComponent } from './types/create-type/create-type.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +18,9 @@ import { ViewAnimalComponent } from './view-animal/view-animal.component';
     MapComponent,
     NavbarComponent,
     CreateAnimalComponent,
-    ViewAnimalComponent
+    ViewAnimalComponent,
+    ListTypesComponent,
+    CreateTypeComponent
   ],
   imports: [
     BrowserModule,

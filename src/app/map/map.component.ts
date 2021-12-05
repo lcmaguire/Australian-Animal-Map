@@ -29,6 +29,8 @@ export class MapComponent implements OnInit {
   markerPositions: google.maps.LatLngLiteral[] = [];
   markers: google.maps.Marker[] = []
 
+  sampleModel : any;
+
   constructor() {
   }
 
@@ -67,6 +69,9 @@ export class MapComponent implements OnInit {
         let temp = { lat: doc.data().lat, lng: doc.data().lng, }
         let markO = { draggable: false, title: `Hash is ${doc.data().hash}`, position: temp };
         this.markerOptions.push(markO)
+
+        this.sampleModel = doc.data()
+        this.sampleModel.id = doc.id;
       });
     }
   }
