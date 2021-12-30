@@ -116,15 +116,23 @@ export class MapComponent implements OnInit {
 
   async geoQuery(...queries: QueryConstraint[]) {
     const center = [Number(this.options.center?.lat), Number(this.options.center?.lng)];
+    console.log(center)
     const radiusInM = 500 * 1000;
     const bounds = geohashQueryBounds(center, radiusInM);
     for (const b of bounds) {
       //queries = this.queryBuilder()
       //queries.push(orderBy("hash"), startAt(b[0]), endAt(b[1]))
-      this.handleQuery(...queries)
+      //this.handleQuery(...queries)
       const citiesRef = collection(this.firestore, "sightings")
       //const q = query(citiesRef, ...queries);
-      const q = query(citiesRef, ...queries, orderBy("hash"), startAt(b[0]), endAt(b[1]));
+      let d = new Date(Number(this.afterTimeFilter))
+      const q = query(citiesRef, /*where("type", "==", this.type),*/ where("timestamp", ">=", Timestamp.fromDate(d)),
+        orderBy("timestamp", "desc"),
+        orderBy("hash"),
+        startAt(b[0], d),
+        endAt(b[1]));
+      console.log(q)
+      console.log()
       const querySnapshot = await getDocs(q);
       querySnapshot.forEach((doc) => {
         console.log("here")
@@ -142,8 +150,7 @@ export class MapComponent implements OnInit {
   async handleQuery(...queries: QueryConstraint[]) {
     console.log(queries)
     const citiesRef = collection(this.firestore, "sightings")
-    //const q = query(citiesRef, ...queries);
-    const q = query(citiesRef, ...queries,);
+    const q = query(citiesRef, ...queries);
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
       console.log("here")
