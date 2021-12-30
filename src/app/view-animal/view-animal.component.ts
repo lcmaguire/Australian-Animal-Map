@@ -7,7 +7,7 @@ import { getStorage, ref, getDownloadURL } from "firebase/storage";
   styleUrls: ['./view-animal.component.css']
 })
 export class ViewAnimalComponent implements OnInit, OnChanges {
-  @Input() model: any;   // instead of any, specify your type
+  @Input() model: any;   // instead of any, specify your type visible toggle?
   constructor() {
   }
 

@@ -21,7 +21,6 @@ export class MapComponent implements OnInit {
     streetViewControl: false
   };
   markerOptions: google.maps.MarkerOptions[] = []
-  markers: google.maps.Marker[] = []
 
   sampleModel: any;
 
