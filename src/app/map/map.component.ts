@@ -58,11 +58,12 @@ export class MapComponent implements OnInit {
     console.log(this.type)
     if (this.type == "Koala") {
       //this.afterTimeFilter = this.now;
-      this.type = "";
+      //this.type = "";
       this.geoQuery(...this.queryBuilder())
       //this.handleQuery(...this.queryBuilder())
     } else {
-      this.handleQuery(...this.queryBuilder())
+      this.geoQuery(...this.queryBuilder())
+      //this.handleQuery(...this.queryBuilder())
     }
   }
 
@@ -71,7 +72,7 @@ export class MapComponent implements OnInit {
     querySnapshot.forEach((doc) => {
       let type = doc.data();
       this.types.push(type.name)
-      //this.type = this.types[0] // hardcode for now
+      this.type = this.types[0] // hardcode for now
     });
   }
 
@@ -121,22 +122,23 @@ export class MapComponent implements OnInit {
     const radiusInM = 5000 * 1000;
     const bounds = geohashQueryBounds(center, radiusInM);
     for (const b of bounds) {
-      //queries = this.queryBuilder()
       //queries.push(orderBy("hash"), startAt(b[0]), endAt(b[1]))
       //this.handleQuery(...queries)
       const citiesRef = collection(this.firestore, "sightings")
       //const q = query(citiesRef, ...queries);
       let d = new Date(Number(this.afterTimeFilter))
-      const q = query(citiesRef,  where("type", "==", this.type),  where("timestamp", ">=", Timestamp.fromDate(d)),
+      let ts = Timestamp.fromDate(d)
+      console.log(b)
+      const q = query(citiesRef, where("type", "==", this.type),
+        where("timestamp", ">=", Timestamp.fromDate(d)),
         orderBy("timestamp", "desc"),
-        orderBy("hash"),
-        startAt(b[0], d),
-        endAt(b[1]));
-      console.log(q)
-      console.log()
+        orderBy("hash",),
+        startAt(Timestamp.now(), b[0]),
+        endAt(ts, b[1])
+      );
+
       const querySnapshot = await getDocs(q);
       querySnapshot.forEach((doc) => {
-        console.log("here")
         let markO = { draggable: false, position: { lat: doc.data().lat, lng: doc.data().lng, }, title: doc.id };
         this.markerOptions.push(markO)
         let sighting = doc.data()
@@ -144,6 +146,7 @@ export class MapComponent implements OnInit {
 
         this.sampleModel = sighting // init so that it doesn't throw undefined err.
         this.sightings.push(sighting)
+        console.log(sighting.timestamp)
       });
     }
   }
