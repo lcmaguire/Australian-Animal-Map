@@ -12,46 +12,59 @@ export class CreateAnimalComponent implements OnInit {
   firestore = getFirestore();
   storage = getStorage()
 
-  success = false
-  errorMessage = ""
-
   options: google.maps.MapOptions = {
     center: { lat: -30, lng: 133.3 },
     zoom: 4,
   };
-
-  center = { lat: -30, lng: 133.3 };
-  zoom = 7
-
   markerPosition: google.maps.MarkerOptions = { draggable: true, position: { lat: -30, lng: 133 } }
+
+  // types are the array of animal types supported by the site
+  types: string[] = [];
+
+  sighting = { description: "", lat: -30.1, lng: 133, hash: "", type: "", timestamp: serverTimestamp(), storageReference: "" }
+  selectedFile: any;
+
+  success = false
+  errorMessage = ""
 
   constructor() { }
 
   ngOnInit(): void {
+    this.getTypes();
   }
 
-  animal = { name: "Test Yeet", description: "", "array-type": ["kangaroo"], lat: -30.1, lng: 133, hash: "", type: "kangaroo", /*timestamp: serverTimestamp()*/ }
-  selectedFiles: any;
-
   async submit() {
-    this.animal.hash = geohashForLocation([this.animal.lat, this.animal.lng]);
-    let res = await addDoc(collection(this.firestore, "cities"),
-      this.animal
-    )
-    console.log(res)
-    if (res.id != undefined) {
-      if (this.selectedFiles != undefined) {
-        const storageRef = ref(this.storage, `${res.id}.png`); // todo handle jpg or alt image types
-  
-        // 'file' comes from the Blob or File API
-        uploadBytes(storageRef, this.selectedFiles[0]).then((snapshot) => {
-          this.success = true
-          console.log('Uploaded a blob or file!');
+    console.log(this.sighting.type)
+    if (this.sighting.type == "" || this.sighting.type == "Select Animal") {
+      // thow err
+    } else {
+      if (this.selectedFile != undefined) {
+        const storageRef = ref(this.storage, this.selectedFile.name);
+        this.sighting.storageReference = this.selectedFile.name;
+        uploadBytes(storageRef, this.selectedFile).then((snapshot) => {
+          this.addDoc()
         });
       } else {
-        this.success = true
+        // handle upload with no img
+        // this.addDoc()
       }
     }
+  }
+
+  async addDoc() {
+    this.sighting.hash = geohashForLocation([this.sighting.lat, this.sighting.lng]);
+    let res = await addDoc(collection(this.firestore, "sightings"),
+      this.sighting,
+    )
+    this.success = true
+  }
+
+  async getTypes() {
+    const querySnapshot = await getDocs(collection(this.firestore, "types"));
+    querySnapshot.forEach((doc) => {
+      let type = doc.data();
+      this.types.push(type.name)
+    });
   }
 
   getValue(event: Event): string {
@@ -60,15 +73,12 @@ export class CreateAnimalComponent implements OnInit {
 
   drag(event: google.maps.MapMouseEvent) {
     if (event.latLng?.toJSON() != undefined) {
-      this.animal.lat = event.latLng?.toJSON().lat
-      this.animal.lng = event.latLng?.toJSON().lng
+      this.sighting.lat = event.latLng?.toJSON().lat
+      this.sighting.lng = event.latLng?.toJSON().lng
     }
   }
 
   selectFile(event: any): void {
-    this.selectedFiles = event.target.files;
-    console.log(this.selectedFiles)
-    console.log(this.selectedFiles[0])
+    this.selectedFile = event.target.files[0];
   }
-
 }

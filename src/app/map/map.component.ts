@@ -44,7 +44,7 @@ export class MapComponent implements OnInit {
 
   async getSightings() {
     this.markerOptions = []
-    const citiesRef = collection(this.firestore, "cities") // shows all animals, todo add in type and arr-contains based queries + location based.
+    const citiesRef = collection(this.firestore, "sightings") // shows all animals, todo add in type and arr-contains based queries + location based.
     const q = query(citiesRef);
 
     const querySnapshot = await getDocs(q);
@@ -73,6 +73,11 @@ export class MapComponent implements OnInit {
       this.infoWindow
       this.infoWindow.open(marker);
     }
+  }
+
+  // will close the info window when open and clicked outside of the info window.
+  closeInfoWindow(event: google.maps.MapMouseEvent) {
+    this.infoWindow?.close()
   }
 
   mapDragend(a: GoogleMap) {

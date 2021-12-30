@@ -21,13 +21,15 @@ export class ViewAnimalComponent implements OnInit, OnChanges {
     if (this.model !== undefined || this.model.id !== "") {
       console.log(this.model)
       this.imgURL = ""
-      this.getURL();
-    } 
+      if (this.model?.storageRef != "") {
+        this.getURL();
+      }
+    }
   }
 
   // not a great design but just want it to work for now
   async getURL() {
-    const pathReference = ref(this.storage, `${this.model?.id}.png`);
+    const pathReference = ref(this.storage, this.model?.storageReference);
     return getDownloadURL(pathReference)
       .then((url) => {
         console.log(url)
