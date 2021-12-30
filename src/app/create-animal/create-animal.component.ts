@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { doc, collection, setDoc, getFirestore, getDoc, addDoc, getDocs, serverTimestamp } from "firebase/firestore";
+import { doc, collection, setDoc, getFirestore, getDoc, addDoc, getDocs, serverTimestamp, Timestamp } from "firebase/firestore";
 import { geohashQuery, geohashForLocation, geohashQueryBounds } from 'geofire-common'
 import { getStorage, ref, uploadBytes } from "firebase/storage";
 import { AuthService } from '../auth.service';
@@ -67,6 +67,12 @@ export class CreateAnimalComponent implements OnInit {
   async addDoc() {
     this.sighting.hash = geohashForLocation([this.sighting.lat, this.sighting.lng]);
     this.sighting.userID = this.auth.user.uid
+    // this is to manually test that time filtering is working
+    let date = new Date().setMonth(0)
+    let temp = new Date(date)
+
+    this.sighting.timestamp = Timestamp.fromDate(temp)
+
     let res = await addDoc(collection(this.firestore, "sightings"),
       this.sighting,
     )
