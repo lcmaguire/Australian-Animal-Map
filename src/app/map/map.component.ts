@@ -128,7 +128,7 @@ export class MapComponent implements OnInit {
       //const q = query(citiesRef, ...queries);
       let d = new Date(Number(this.afterTimeFilter))
       let ts = Timestamp.fromDate(d)
-      console.log(b)
+      console.log(d)
       const q = query(citiesRef, where("type", "==", this.type),
         where("timestamp", ">=", Timestamp.fromDate(d)),
         orderBy("timestamp", "desc"),
@@ -146,7 +146,6 @@ export class MapComponent implements OnInit {
 
         this.sampleModel = sighting // init so that it doesn't throw undefined err.
         this.sightings.push(sighting)
-        console.log(sighting.timestamp)
       });
     }
   }

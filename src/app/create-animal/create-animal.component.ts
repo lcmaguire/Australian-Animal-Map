@@ -57,7 +57,7 @@ export class CreateAnimalComponent implements OnInit {
       return "Upload Image of Animal Sighting"
     }
 
-    if (this.sighting.lat > -10 || this.sighting.lat < -45 || this.sighting.lng > 155 || this.sighting.lng < 109){
+    if (this.sighting.lat > -10 || this.sighting.lat < -45 || this.sighting.lng > 155 || this.sighting.lng < 109) {
       return "Select A location from within Australia"
     }
 
@@ -67,11 +67,6 @@ export class CreateAnimalComponent implements OnInit {
   async addDoc() {
     this.sighting.hash = geohashForLocation([this.sighting.lat, this.sighting.lng]);
     this.sighting.userID = this.auth.user.uid
-    // this is to manually test that time filtering is working
-    let date = new Date().setMonth(0)
-    let temp = new Date(date)
-
-    this.sighting.timestamp = Timestamp.fromDate(temp)
 
     let res = await addDoc(collection(this.firestore, "sightings"),
       this.sighting,
