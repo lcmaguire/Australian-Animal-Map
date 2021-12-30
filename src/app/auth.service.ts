@@ -35,7 +35,6 @@ export class AuthService {
     onAuthStateChanged(this.auth, (user) => {
       if (user) {
         this.user = user
-        this.user = {displayName: "It works"}
         this.loggedIn = true
       } else {
         this.loggedIn = false;

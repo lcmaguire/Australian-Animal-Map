@@ -1,27 +1,37 @@
-<div class="container pt-5">
-    <p>Add Animal Sighting</p>
-    <div class="form-group py-3">
-        <label for="formGroupExampleInput2">description</label>
-        <input [value]="sighting.description" (input)="sighting.description=getValue($event)" class="form-control">
+<div class="container">
+    <h1>Add Animal Sighting</h1>
+
+    <div class="mb-3">
+        <label class="form-label">Animal Type</label>
+        <select class="form-select" (input)="sighting.type=getValue($event)">
+            <option selected>Select Animal</option>
+            <option *ngFor="let t of types" [value]="t">{{t}}</option>
+        </select>
     </div>
 
-    <select class="form-control my-3" (input)="sighting.type=getValue($event)">
-        <option selected>Select Animal</option>
-        <option *ngFor="let t of types" [value]="t">{{t}}</option>
-    </select>
+    <!-- TODO add in number of animals seen-->
 
-    <label class = "py-3">
-        <input type="file" class="text-nowrap text-truncate" (change)="selectFile($event)" />
-    </label>
+    <div class="mb-3">
+        <label class="form-label">Description</label>
+        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
+            (input)="sighting.description=getValue($event)" placeholder=""></textarea>
+    </div>
 
-    <google-map #map width="100%" height="300px" [options]="options">
+    <div class="mb-3">
+        <label for="formFile" class="form-label">Upload Photo of animal sighting</label>
+        <input class="form-control" type="file" id="formFile" (change)="selectFile($event)"  accept="image/png, image/jpeg">
+    </div>
+
+    <label  class="form-label">Drag pin to sighting location</label>
+    <google-map #map width="100%" height="400px" [options]="options">
         <map-marker [options]="markerPosition" (mapDragend)="drag($event)"></map-marker>
     </google-map>
-    <div class="alert alert-danger" role="alert" *ngIf="errorMessage != ''">
+
+    <div class="alert alert-danger py-3" role="alert" *ngIf="errorMessage != ''">
         {{errorMessage}}
     </div>
 
-    <div class="alert alert-success" role="alert" *ngIf="success">
+    <div class="alert alert-success py-3" role="alert" *ngIf="success">
         Successfully added animal sighting.
     </div>
     <button type="submit" class="btn btn-success my-3" (click)="submit()">Submit</button>
