@@ -15,7 +15,7 @@
     </div>
 </div> -->
 
-<form class = "pt-2">
+<div class = "pt-2">
     <div class="row g-3">
         <div class="col">
             <label class="form-label">Animal Type</label>
@@ -31,10 +31,10 @@
         </div>
     </div>
     <div class="d-grid gap-2">
-        <button type="submit" class="btn btn-success my-3" (click)="search()">Search</button>
+        <button  class="btn btn-success my-3" (click)="search()">Search</button>
     </div>
        
-</form>
+</div>
 
 <google-map #map width="100%" height="500px" [options]="options" (mapDragend)="mapDragend(map)"
     (mapClick)="closeInfoWindow($event)">

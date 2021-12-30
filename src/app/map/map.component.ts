@@ -1,10 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { doc, collection, setDoc, getFirestore, getDoc, addDoc, getDocs, serverTimestamp } from "firebase/firestore";
+import { doc, collection, setDoc, getFirestore, getDoc, addDoc, getDocs, Timestamp } from "firebase/firestore";
 
 import { GoogleMap, MapInfoWindow, MapMarker } from '@angular/google-maps';
 import { geohashQuery, geohashForLocation, geohashQueryBounds } from 'geofire-common'
 
-import { query, orderBy, limit, where, startAt, endAt } from "firebase/firestore";
+import { query, orderBy, limit, where, startAt, endAt, QueryConstraint } from "firebase/firestore";
 
 @Component({
   selector: 'app-map',
@@ -30,22 +30,14 @@ export class MapComponent implements OnInit {
   // user selected type
   type = ""
 
+  now = new Date()
+
   afterTimeFilters: any[] = [
-    {text: "Last Month", timestamp: () => {
-      var d = new Date();
-      d.setMonth(d.getMonth() - 1)
-      d.setHours(0, 0, 0, 0);
-      return d
-    }},
-    {text: "This Year Month", timestamp: () => {
-      var d = new Date();
-      d.setMonth(0)
-      d.setHours(0, 0, 0, 0);
-      return d
-    }}
+    { text: "Last Month", timestamp: new Date().setMonth(this.now.getMonth() - 1) },
+    { text: "This Year", timestamp: new Date().setMonth(0) }
   ]
 
-  afterTimeFilter = ""
+  afterTimeFilter: any = this.afterTimeFilters[0].timestamp
 
   // objects of animal sightings.
   sightings: any[] = []
@@ -55,26 +47,22 @@ export class MapComponent implements OnInit {
 
   ngOnInit(): void {
     this.getTypes();
-    this.getSightings();
+    //this.getSightings();
   }
 
   async getSightings() {
-    console.log(this.afterTimeFilter)
+    console.log(this.afterTimeFilters)
 
     this.markerOptions = []
-    const citiesRef = collection(this.firestore, "sightings") // shows all animals, todo add in type and arr-contains based queries + location based.
-    const q = query(citiesRef);
-
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-      let markO = { draggable: false, position: { lat: doc.data().lat, lng: doc.data().lng, }, title: doc.id };
-      this.markerOptions.push(markO)
-      let sighting = doc.data()
-      sighting.id = doc.id
-
-      this.sampleModel = sighting // init so that it doesn't throw undefined err.
-      this.sightings.push(sighting)
-    });
+    const citiesRef = collection(this.firestore, "sightings",) // shows all animals, todo add in type and arr-contains based queries + location based.
+    if (this.type == "Koala") {
+      //this.afterTimeFilter = this.now;
+      //this.type = "";
+      this.geoQuery(...this.queryBuilder())
+      //this.handleQuery(...this.queryBuilder())
+    } else {
+      this.handleQuery(...this.queryBuilder())
+    }
   }
 
   async getTypes() {
@@ -82,6 +70,7 @@ export class MapComponent implements OnInit {
     querySnapshot.forEach((doc) => {
       let type = doc.data();
       this.types.push(type.name)
+      this.type = this.types[0] // hardcode for now
     });
   }
 
@@ -110,5 +99,65 @@ export class MapComponent implements OnInit {
   // todo set up more complex queries via this.
   search() {
     this.getSightings()
+  }
+
+  queryBuilder(): QueryConstraint[] { // rename buildQuery
+    // based upon query make arr and return
+    let queries: QueryConstraint[] = [];
+    if (this.type != "") {
+      queries.push(where("type", "==", this.type))
+    }
+    if (this.afterTimeFilter < this.now) {
+      let d = new Date(Number(this.afterTimeFilter))
+      queries.push(where("timestamp", ">=", Timestamp.fromDate(d)), orderBy("timestamp"))
+    }
+    return queries
+  }
+
+  async geoQuery(...queries: QueryConstraint[]) {
+    const center = [Number(this.options.center?.lat), Number(this.options.center?.lng)];
+    const radiusInM = 500 * 1000;
+    const bounds = geohashQueryBounds(center, radiusInM);
+    for (const b of bounds) {
+      //queries = this.queryBuilder()
+      //queries.push(orderBy("hash"), startAt(b[0]), endAt(b[1]))
+      this.handleQuery(...queries)
+      const citiesRef = collection(this.firestore, "sightings")
+      //const q = query(citiesRef, ...queries);
+      const q = query(citiesRef, ...queries, orderBy("hash"), startAt(b[0]), endAt(b[1]));
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+        console.log("here")
+        let markO = { draggable: false, position: { lat: doc.data().lat, lng: doc.data().lng, }, title: doc.id };
+        this.markerOptions.push(markO)
+        let sighting = doc.data()
+        sighting.id = doc.id
+
+        this.sampleModel = sighting // init so that it doesn't throw undefined err.
+        this.sightings.push(sighting)
+      });
+    }
+  }
+
+  async handleQuery(...queries: QueryConstraint[]) {
+    console.log(queries)
+    const citiesRef = collection(this.firestore, "sightings")
+    //const q = query(citiesRef, ...queries);
+    const q = query(citiesRef, ...queries,);
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      console.log("here")
+      let markO = { draggable: false, position: { lat: doc.data().lat, lng: doc.data().lng, }, title: doc.id };
+      this.markerOptions.push(markO)
+      let sighting = doc.data()
+      sighting.id = doc.id
+
+      this.sampleModel = sighting // init so that it doesn't throw undefined err.
+      this.sightings.push(sighting)
+    });
+
+    if (querySnapshot.empty) {
+      console.log("empty")
+    }
   }
 }
