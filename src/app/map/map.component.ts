@@ -13,7 +13,6 @@ import { query, orderBy, limit, where, startAt, endAt } from "firebase/firestore
 })
 export class MapComponent implements OnInit {
   @ViewChild(MapInfoWindow) infoWindow: MapInfoWindow | undefined;
-  infoContent = "" // todo try this with @ViewChild like above with obj or map of obj
   firestore = getFirestore();
 
   options: google.maps.MapOptions = {
@@ -21,107 +20,65 @@ export class MapComponent implements OnInit {
     zoom: 4,
     streetViewControl: false
   };
-
-  center = { lat: -30, lng: 133.3 };
-  zoom = 9
-
   markerOptions: google.maps.MarkerOptions[] = []
-  markerPositions: google.maps.LatLngLiteral[] = [];
   markers: google.maps.Marker[] = []
 
-  sampleModel : any;
+  sampleModel: any;
+
+  // types are the array of animal types supported by the site
+  types: string[] = [];
+
+  // user selected type
+  type = ""
 
   constructor() {
   }
 
   ngOnInit(): void {
-    //this.seed();
-    this.getSeededDocs()
+    this.getTypes();
+    this.getSightings()
   }
 
-  async addSeedDoc() {
-    // Add a new document in collection "cities"
-    await setDoc(doc(this.firestore, "cities", "LA"), {
-      name: "Los Angeles",
-      state: "CA",
-      country: "USA"
-    });
-    this.getSeededDocs()
-  }
-
-  async getSeededDocs() {
-    console.log("start")
-    // Find cities within 50km of London
+  async getSightings() {
     this.markerOptions = []
-    const center = [Number(this.options.center?.lat), Number(this.options.center?.lng)];
-    const radiusInM = 50 * 1000;
+    const citiesRef = collection(this.firestore, "cities") // shows all animals, todo add in type and arr-contains based queries + location based.
+    const q = query(citiesRef);
 
-    // Each item in 'bounds' represents a startAt/endAt pair. We have to issue
-    // a separate query for each pair. There can be up to 9 pairs of bounds
-    // depending on overlap, but in most cases there are 4.
-    const bounds = geohashQueryBounds(center, radiusInM);
-    for (const b of bounds) {
-      const citiesRef = collection(this.firestore, "cities")
-      const q = query(citiesRef, where("array-type", "array-contains", "kangaroo"), orderBy("hash"), startAt(b[0]), endAt(b[1]));
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      let markO = { draggable: false, position: { lat: doc.data().lat, lng: doc.data().lng, } };
+      this.markerOptions.push(markO)
 
-      const querySnapshot = await getDocs(q);
-      querySnapshot.forEach((doc) => {
-        let temp = { lat: doc.data().lat, lng: doc.data().lng, }
-        let markO = { draggable: false, title: `Hash is ${doc.data().hash}`, position: temp };
-        this.markerOptions.push(markO)
-
-        this.sampleModel = doc.data()
-        this.sampleModel.id = doc.id;
-      });
-    }
+      this.sampleModel = doc.data()
+      this.sampleModel.id = doc.id; // set this to be got via marker rather than here.
+    });
   }
 
-  addMarker(event: google.maps.MapMouseEvent) {
-    if (event.latLng != null) {
-      this.markerPositions.push(event.latLng.toJSON());
-    }
-
+  async getTypes() {
+    const querySnapshot = await getDocs(collection(this.firestore, "types"));
+    querySnapshot.forEach((doc) => {
+      let type = doc.data();
+      this.types.push(type.name)
+    });
   }
 
   openInfoWindow(marker: MapMarker, info: any) {
     if (this.infoWindow != undefined) {
       console.log(marker)
-      this.infoContent = info
       this.infoWindow.open(marker);
     }
   }
 
-  seed() {
-    // Compute the GeoHash for a lat/lng point
-    const lat = -30;
-    const lng = 133;
-    const hash = geohashForLocation([lat, lng]);
-    let data = { lat, lng, hash }
-
-    // Add the hash and the lat/lng to the document. We will use the hash
-    // for queries and the lat/lng for distance comparisons.
-    const newCityRef = doc(collection(this.firestore, "cities"));
-    const londonRef = setDoc(newCityRef, data)
-
-    /*this.firestore.collection('cities').doc('LON');
-    londonRef.update({
-      geohash: hash,
-      lat: lat,
-      lng: lng
-    }).then(() => {
-      // ...
-    });*/
-  }
-
-
   mapDragend(a: GoogleMap) {
     console.log(a.getCenter()?.toJSON())
     this.options.center = a.getCenter()?.toJSON()
-    this.center = { lat: Number(a.getCenter()?.toJSON().lat), lng: Number(a.getCenter()?.toJSON().lng), }
   }
 
-  search(){
-    console.log("here")
-    this.getSeededDocs()
+  search() {
+    this.getSightings()
+  }
+
+  getValue(event: Event): string {
+    return (event.target as HTMLInputElement).value;
   }
 }

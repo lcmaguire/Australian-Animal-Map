@@ -1,10 +1,10 @@
-<p>map works!</p>
+<select class="form-control mt-4" (input)="type=getValue($event)">
+    <option *ngFor="let t of types" [value]="t">{{t}}</option>
+</select>
+<button type="submit" class="btn btn-success my-3" (click)="search()">Submit</button>
 
-<google-map #map width="100%" height="500px" [center]="center" [zoom]="zoom" [options]="options" (mapDragend)="mapDragend(map)">
-    <map-circle [center]="center" [radius]="50000"></map-circle>
+<google-map #map width="100%" height="500px" [options]="options" (mapDragend)="mapDragend(map)">
     <map-marker #marker="mapMarker" *ngFor="let markerPosition of markerOptions" [options]="markerPosition"
         (mapClick)="openInfoWindow(marker, markerPosition.title)"></map-marker>
     <map-info-window *ngIf="markerOptions.length > 0"><app-view-animal [model]="sampleModel"></app-view-animal></map-info-window>
 </google-map>
-
-<button type="submit" class="btn btn-success my-3" (click)="search()">Submit</button>
