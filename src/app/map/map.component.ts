@@ -109,34 +109,28 @@ export class MapComponent implements OnInit {
     if (this.type != "") {
       queries.push(where("type", "==", this.type))
     }
+   /* set it up so this is only added if not geo query
     if (this.afterTimeFilter < this.now) {
       let d = new Date(Number(this.afterTimeFilter))
-      queries.push(where("timestamp", ">=", Timestamp.fromDate(d)), orderBy("timestamp"))
-    }
+      queries.push( orderBy("timestamp", "desc"))
+    }*/
     return queries
   }
 
   async geoQuery(...queries: QueryConstraint[]) {
     const center = [Number(this.options.center?.lat), Number(this.options.center?.lng)];
     console.log(center)
-    const radiusInM = 5000 * 1000;
+    const radiusInM = 500 * 1000;
     const bounds = geohashQueryBounds(center, radiusInM);
     for (const b of bounds) {
-      //queries.push(orderBy("hash"), startAt(b[0]), endAt(b[1]))
-      //this.handleQuery(...queries)
       const citiesRef = collection(this.firestore, "sightings")
-      //const q = query(citiesRef, ...queries);
-      let d = new Date(Number(this.afterTimeFilter))
-      let ts = Timestamp.fromDate(d)
-      console.log(d)
-      const q = query(citiesRef, where("type", "==", this.type),
-        where("timestamp", ">=", Timestamp.fromDate(d)),
-        orderBy("timestamp", "desc"),
-        orderBy("hash",),
-        startAt(Timestamp.now(), b[0]),
-        endAt(ts, b[1])
+      const q = query(citiesRef,
+        ...queries,
+        orderBy("hash"),
+        orderBy("timestamp", "desc"), //handle this not working / being weird
+        startAt(b[0]),
+        endAt(b[1]),
       );
-
       const querySnapshot = await getDocs(q);
       querySnapshot.forEach((doc) => {
         let markO = { draggable: false, position: { lat: doc.data().lat, lng: doc.data().lng, }, title: doc.id };
