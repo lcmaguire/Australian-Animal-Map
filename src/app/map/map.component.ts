@@ -55,9 +55,10 @@ export class MapComponent implements OnInit {
 
     this.markerOptions = []
     const citiesRef = collection(this.firestore, "sightings",) // shows all animals, todo add in type and arr-contains based queries + location based.
+    console.log(this.type)
     if (this.type == "Koala") {
       //this.afterTimeFilter = this.now;
-      //this.type = "";
+      this.type = "";
       this.geoQuery(...this.queryBuilder())
       //this.handleQuery(...this.queryBuilder())
     } else {
@@ -70,7 +71,7 @@ export class MapComponent implements OnInit {
     querySnapshot.forEach((doc) => {
       let type = doc.data();
       this.types.push(type.name)
-      this.type = this.types[0] // hardcode for now
+      //this.type = this.types[0] // hardcode for now
     });
   }
 
@@ -117,7 +118,7 @@ export class MapComponent implements OnInit {
   async geoQuery(...queries: QueryConstraint[]) {
     const center = [Number(this.options.center?.lat), Number(this.options.center?.lng)];
     console.log(center)
-    const radiusInM = 500 * 1000;
+    const radiusInM = 5000 * 1000;
     const bounds = geohashQueryBounds(center, radiusInM);
     for (const b of bounds) {
       //queries = this.queryBuilder()
@@ -126,7 +127,7 @@ export class MapComponent implements OnInit {
       const citiesRef = collection(this.firestore, "sightings")
       //const q = query(citiesRef, ...queries);
       let d = new Date(Number(this.afterTimeFilter))
-      const q = query(citiesRef, /*where("type", "==", this.type),*/ where("timestamp", ">=", Timestamp.fromDate(d)),
+      const q = query(citiesRef,  where("type", "==", this.type),  where("timestamp", ">=", Timestamp.fromDate(d)),
         orderBy("timestamp", "desc"),
         orderBy("hash"),
         startAt(b[0], d),
