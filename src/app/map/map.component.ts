@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { doc, collection, setDoc, getFirestore, getDoc, addDoc, getDocs } from "firebase/firestore";
+import { doc, collection, setDoc, getFirestore, getDoc, addDoc, getDocs, serverTimestamp } from "firebase/firestore";
 
 import { GoogleMap, MapInfoWindow, MapMarker } from '@angular/google-maps';
 import { geohashQuery, geohashForLocation, geohashQueryBounds } from 'geofire-common'
@@ -30,6 +30,23 @@ export class MapComponent implements OnInit {
   // user selected type
   type = ""
 
+  afterTimeFilters: any[] = [
+    {text: "Last Month", timestamp: () => {
+      var d = new Date();
+      d.setMonth(d.getMonth() - 1)
+      d.setHours(0, 0, 0, 0);
+      return d
+    }},
+    {text: "This Year Month", timestamp: () => {
+      var d = new Date();
+      d.setMonth(0)
+      d.setHours(0, 0, 0, 0);
+      return d
+    }}
+  ]
+
+  afterTimeFilter = ""
+
   // objects of animal sightings.
   sightings: any[] = []
 
@@ -38,10 +55,12 @@ export class MapComponent implements OnInit {
 
   ngOnInit(): void {
     this.getTypes();
-    this.getSightings()
+    this.getSightings();
   }
 
   async getSightings() {
+    console.log(this.afterTimeFilter)
+
     this.markerOptions = []
     const citiesRef = collection(this.firestore, "sightings") // shows all animals, todo add in type and arr-contains based queries + location based.
     const q = query(citiesRef);
