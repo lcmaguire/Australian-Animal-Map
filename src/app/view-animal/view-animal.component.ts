@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 @Component({
@@ -6,7 +6,7 @@ import { getStorage, ref, getDownloadURL } from "firebase/storage";
   templateUrl: './view-animal.component.html',
   styleUrls: ['./view-animal.component.css']
 })
-export class ViewAnimalComponent implements OnInit {
+export class ViewAnimalComponent implements OnInit, OnChanges {
   @Input() model: any;   // instead of any, specify your type
   constructor() {
   }
@@ -14,7 +14,13 @@ export class ViewAnimalComponent implements OnInit {
   storage = getStorage();
   imgURL = "" // promise of string
   ngOnInit(): void {
+  }
+
+  // alternate solution save imgurl with obj
+  ngOnChanges(changes: SimpleChanges): void {
     if (this.model !== undefined || this.model.id !== "") {
+      console.log(this.model)
+      this.imgURL = ""
       this.getURL();
     } 
   }

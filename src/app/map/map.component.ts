@@ -31,6 +31,9 @@ export class MapComponent implements OnInit {
   // user selected type
   type = ""
 
+  // objects of animal sightings.
+  sightings: any[] = []
+
   constructor() {
   }
 
@@ -46,11 +49,13 @@ export class MapComponent implements OnInit {
 
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
-      let markO = { draggable: false, position: { lat: doc.data().lat, lng: doc.data().lng, } };
+      let markO = { draggable: false, position: { lat: doc.data().lat, lng: doc.data().lng, }, title: doc.id };
       this.markerOptions.push(markO)
+      let sighting = doc.data()
+      sighting.id = doc.id
 
-      this.sampleModel = doc.data()
-      this.sampleModel.id = doc.id; // set this to be got via marker rather than here.
+      this.sampleModel = sighting // init so that it doesn't throw undefined err.
+      this.sightings.push(sighting)
     });
   }
 
@@ -64,7 +69,8 @@ export class MapComponent implements OnInit {
 
   openInfoWindow(marker: MapMarker, info: any) {
     if (this.infoWindow != undefined) {
-      console.log(marker)
+      this.sampleModel = this.sightings.find(element => element.id == info) // info is set to the doc id of the selected sighting.
+      this.infoWindow
       this.infoWindow.open(marker);
     }
   }
@@ -74,11 +80,12 @@ export class MapComponent implements OnInit {
     this.options.center = a.getCenter()?.toJSON()
   }
 
-  search() {
-    this.getSightings()
-  }
-
   getValue(event: Event): string {
     return (event.target as HTMLInputElement).value;
+  }
+
+  // todo set up more complex queries via this.
+  search() {
+    this.getSightings()
   }
 }
