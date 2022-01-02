@@ -1,20 +1,3 @@
-<!--<select class="form-control mt-4" (input)="type=getValue($event)">
-    <option *ngFor="let t of types" [value]="t">{{t}}</option>
-</select>
-<button type="submit" class="btn btn-success my-3" (click)="search()">Submit</button> -->
-
-<!--<div class="row g-3">
-    <div class="col-sm-6">
-        <label class="form-label">Animal Type</label>
-        <select class="form-select" (input)="type=getValue($event)">
-            <option *ngFor="let t of types" [value]="t">{{t}}</option>
-        </select>
-    </div>
-    <div class="col-sm-6">
-        <button type="submit" class="btn btn-success my-3" (click)="search()">Submit</button>
-    </div>
-</div> -->
-
 <div class = "pt-2">
     <div class="row g-3">
         <div class="col">
@@ -24,10 +7,7 @@
             </select>
         </div>
         <div class="col">
-            <label class="form-label">Sighting Time</label>
-            <select class="form-select" (input)="afterTimeFilter=getValue($event)">
-                <option *ngFor="let a of afterTimeFilters" [value]="a.timestamp">{{a.text}}</option>
-            </select>
+
         </div>
     </div>
     <div class="d-grid gap-2">

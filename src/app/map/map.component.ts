@@ -5,6 +5,7 @@ import { GoogleMap, MapInfoWindow, MapMarker } from '@angular/google-maps';
 import { geohashQuery, geohashForLocation, geohashQueryBounds } from 'geofire-common'
 
 import { query, orderBy, limit, where, startAt, endAt, QueryConstraint } from "firebase/firestore";
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 @Component({
   selector: 'app-map',
@@ -14,6 +15,7 @@ import { query, orderBy, limit, where, startAt, endAt, QueryConstraint } from "f
 export class MapComponent implements OnInit {
   @ViewChild(MapInfoWindow) infoWindow: MapInfoWindow | undefined;
   firestore = getFirestore();
+  storage = getStorage();
 
   options: google.maps.MapOptions = {
     center: { lat: -30, lng: 133.3 },
@@ -30,15 +32,6 @@ export class MapComponent implements OnInit {
   // user selected type
   type = ""
 
-  now = new Date()
-
-  afterTimeFilters: any[] = [
-    { text: "Last Month", timestamp: new Date().setMonth(this.now.getMonth() - 1) },
-    { text: "This Year", timestamp: new Date().setMonth(0) }
-  ]
-
-  afterTimeFilter: any = this.afterTimeFilters[0].timestamp
-
   // objects of animal sightings.
   sightings: any[] = []
 
@@ -47,24 +40,11 @@ export class MapComponent implements OnInit {
 
   ngOnInit(): void {
     this.getTypes();
-    //this.getSightings();
   }
 
   async getSightings() {
-    console.log(this.afterTimeFilters)
-
     this.markerOptions = []
-    const citiesRef = collection(this.firestore, "sightings",) // shows all animals, todo add in type and arr-contains based queries + location based.
-    console.log(this.type)
-    if (this.type == "Koala") {
-      //this.afterTimeFilter = this.now;
-      //this.type = "";
-      this.geoQuery(...this.queryBuilder())
-      //this.handleQuery(...this.queryBuilder())
-    } else {
-      this.geoQuery(...this.queryBuilder())
-      //this.handleQuery(...this.queryBuilder())
-    }
+    this.handleQuery(...this.queryBuilder())
   }
 
   async getTypes() {
@@ -72,7 +52,8 @@ export class MapComponent implements OnInit {
     querySnapshot.forEach((doc) => {
       let type = doc.data();
       this.types.push(type.name)
-      this.type = this.types[0] // hardcode for now
+      this.type = this.types[0] // hardcode for now, get sightings on load?
+      this.getSightings();
     });
   }
 
@@ -109,39 +90,8 @@ export class MapComponent implements OnInit {
     if (this.type != "") {
       queries.push(where("type", "==", this.type))
     }
-   /* set it up so this is only added if not geo query
-    if (this.afterTimeFilter < this.now) {
-      let d = new Date(Number(this.afterTimeFilter))
-      queries.push( orderBy("timestamp", "desc"))
-    }*/
+    queries.push(orderBy("timestamp", "desc"))
     return queries
-  }
-
-  async geoQuery(...queries: QueryConstraint[]) {
-    const center = [Number(this.options.center?.lat), Number(this.options.center?.lng)];
-    console.log(center)
-    const radiusInM = 500 * 1000;
-    const bounds = geohashQueryBounds(center, radiusInM);
-    for (const b of bounds) {
-      const citiesRef = collection(this.firestore, "sightings")
-      const q = query(citiesRef,
-        ...queries,
-        orderBy("hash"),
-        orderBy("timestamp", "desc"), //handle this not working / being weird
-        startAt(b[0]),
-        endAt(b[1]),
-      );
-      const querySnapshot = await getDocs(q);
-      querySnapshot.forEach((doc) => {
-        let markO = { draggable: false, position: { lat: doc.data().lat, lng: doc.data().lng, }, title: doc.id };
-        this.markerOptions.push(markO)
-        let sighting = doc.data()
-        sighting.id = doc.id
-
-        this.sampleModel = sighting // init so that it doesn't throw undefined err.
-        this.sightings.push(sighting)
-      });
-    }
   }
 
   async handleQuery(...queries: QueryConstraint[]) {
@@ -150,7 +100,6 @@ export class MapComponent implements OnInit {
     const q = query(citiesRef, ...queries);
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
-      console.log("here")
       let markO = { draggable: false, position: { lat: doc.data().lat, lng: doc.data().lng, }, title: doc.id };
       this.markerOptions.push(markO)
       let sighting = doc.data()
@@ -159,9 +108,5 @@ export class MapComponent implements OnInit {
       this.sampleModel = sighting // init so that it doesn't throw undefined err.
       this.sightings.push(sighting)
     });
-
-    if (querySnapshot.empty) {
-      console.log("empty")
-    }
   }
 }
