@@ -7,7 +7,7 @@
           </div>
         <img [src]="imgURL" class="card-img-top" alt="..."  *ngIf ="imgURL.length > 0">
         <div class="card-body">
-            <h5 class="card-title">{{model?.name}}</h5>
+            <h5 class="card-title">{{model?.type}} seen at {{model?.timestamp.toDate() | date: 'd/M/yyyy'}}</h5>
             <p class="card-text">{{model?.description}}</p>
         </div>
     </div>

@@ -19,7 +19,6 @@ export class ViewAnimalComponent implements OnInit, OnChanges {
   // alternate solution save imgurl with obj
   ngOnChanges(changes: SimpleChanges): void {
     if (this.model !== undefined || this.model.id !== "") {
-      console.log(this.model)
       this.imgURL = ""
       if (this.model?.storageRef != "") {
         this.getURL();

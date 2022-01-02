@@ -11,6 +11,8 @@ import { CreateAnimalComponent } from './create-animal/create-animal.component';
 import { ViewAnimalComponent } from './view-animal/view-animal.component';
 import { ListTypesComponent } from './types/list-types/list-types.component';
 import { CreateTypeComponent } from './types/create-type/create-type.component';
+import { HomeComponent } from './home/home.component';
+import { FooterComponent } from './footer/footer.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +22,9 @@ import { CreateTypeComponent } from './types/create-type/create-type.component';
     CreateAnimalComponent,
     ViewAnimalComponent,
     ListTypesComponent,
-    CreateTypeComponent
+    CreateTypeComponent,
+    HomeComponent,
+    FooterComponent
   ],
   imports: [
     BrowserModule,
