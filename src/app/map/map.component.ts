@@ -52,7 +52,7 @@ export class MapComponent implements OnInit {
     querySnapshot.forEach((doc) => {
       let type = doc.data();
       this.types.push(type.name)
-      this.type = this.types[0] // hardcode for now, get sightings on load?
+      this.type = this.types[0] // hardcode for now
       this.getSightings();
     });
   }
