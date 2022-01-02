@@ -1,26 +1,21 @@
-<div class = "pt-2">
-    <div class="row g-3">
-        <div class="col">
-            <label class="form-label">Animal Type</label>
-            <select class="form-select" (input)="type=getValue($event)">
-                <option *ngFor="let t of types" [value]="t">{{t}}</option>
-            </select>
+<div class="pt-2">
+    <div class="row">
+        <label class="form-label">Animal Type</label>
+        <select class="form-select" (input)="type=getValue($event)">
+            <option *ngFor="let t of types" [value]="t">{{t}}</option>
+        </select>
+        <div class="d-grid">
+            <button class="btn btn-success my-3" (click)="search()">Search</button>
         </div>
         <div class="col">
-
+            <google-map #map width="100%" [options]="options" (mapDragend)="mapDragend(map)"
+                (mapClick)="closeInfoWindow($event)">
+                <map-marker #marker="mapMarker" *ngFor="let markerPosition of markerOptions" [options]="markerPosition"
+                    (mapClick)="openInfoWindow(marker, markerPosition.title)"></map-marker>
+                <map-info-window *ngIf="markerOptions.length > 0">
+                    <app-view-animal [model]="sampleModel"></app-view-animal>
+                </map-info-window>
+            </google-map>
         </div>
     </div>
-    <div class="d-grid gap-2">
-        <button  class="btn btn-success my-3" (click)="search()">Search</button>
-    </div>
-       
 </div>
-
-<google-map #map width="100%" [options]="options" (mapDragend)="mapDragend(map)"
-    (mapClick)="closeInfoWindow($event)">
-    <map-marker #marker="mapMarker" *ngFor="let markerPosition of markerOptions" [options]="markerPosition"
-        (mapClick)="openInfoWindow(marker, markerPosition.title)"></map-marker>
-    <map-info-window *ngIf="markerOptions.length > 0">
-        <app-view-animal [model]="sampleModel"></app-view-animal>
-    </map-info-window>
-</google-map>
