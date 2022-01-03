@@ -12,18 +12,14 @@
 </section>
 
 <div class="container">
-    <div class="row row-cols-1 row-cols-md-2 g-4">
-        <div class="col  card-group" *ngFor="let t of types">
+    <h2>Animals Currently Being Tracked</h2>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        <div class="col card-group" *ngFor="let t of types" >
             <div class="card">
-                <img [src]="t.imgURL" class="card-img-top img-fluid" alt="...">
+                <img [src]="t.imgURL" class="card-img-top img-fluid" >
                 <div class="card-body">
-                    <h5 class="card-title">Card title</h5>
-                    <p class="card-text">This is a longer card with supporting text below as a natural lead-in to
-                        additional
-                        content. This content is a little bit longer.</p>
-                </div>
-                <div class="card-footer">
-                    <small class="text-muted">Last updated 3 mins ago</small>
+                    <h5 class="card-title">{{t.name}} {{t.emoji}}</h5>
+                    <p class="card-text">{{t.description}}</p>
                 </div>
             </div>
         </div>
