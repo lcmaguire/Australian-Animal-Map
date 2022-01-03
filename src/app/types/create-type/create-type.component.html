@@ -9,9 +9,23 @@
         <input [value]="animal.description" (input)="animal.description=getValue($event)" class="form-control">
     </div>
 
+    <div class="mb-3">
+        <label class="form-label">Conservation Status</label>
+        <select class="form-select" (input)="animal.conservationStatus=getValue($event)">
+            <option selected>Select Conservation Status</option>
+            <option *ngFor="let c of conservationStatus" [value]="c">{{c}}</option>
+        </select>
+    </div>
+
     <div class="form-group py-3">
-        <label for="formGroupExampleInput2">Emoji</label>
+        <label for="formGroupExampleInput2">Emoji (Optional)</label>
         <input [value]="animal.emoji" (input)="animal.emoji=getValue($event)" class="form-control">
+    </div>
+
+    <div class="mb-3">
+        <label for="formFile" class="form-label">Upload Photo of animal sighting</label>
+        <input class="form-control" type="file" id="formFile" (change)="selectFile($event)"
+            accept="image/png, image/jpeg">
     </div>
 
     <div class="alert alert-danger" role="alert" *ngIf="errorMessage != ''">
@@ -19,7 +33,7 @@
     </div>
 
     <div class="alert alert-success" role="alert" *ngIf="success">
-        Successfully added Membership
+        Successfully added Animal Type
     </div>
     <button type="submit" class="btn btn-success my-3" (click)="submit()">Submit</button>
 </div>
