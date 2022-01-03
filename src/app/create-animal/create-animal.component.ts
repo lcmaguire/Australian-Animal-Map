@@ -37,8 +37,8 @@ export class CreateAnimalComponent implements OnInit {
   async submit() {
     this.errorMessage = this.validate()
     if (this.errorMessage == "") {
-      const storageRef = ref(this.storage, `sightings/${this.selectedFile.name}`);
-      this.sighting.storageReference = `sightings/${this.selectedFile.name}`;
+      this.sighting.storageReference = `sightings/${this.auth.user.uid}/${this.selectedFile.name}`;
+      const storageRef = ref(this.storage, this.sighting.storageReference);
       uploadBytes(storageRef, this.selectedFile).then((snapshot) => {
         this.addDoc()
       });

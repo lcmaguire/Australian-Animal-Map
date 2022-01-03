@@ -1,4 +1,4 @@
-<div class="container pt-2">
+<div class="container pt-2" *ngIf = "auth.loggedIn">
     <div class="row">
         <h1>Add Animal Sighting</h1>
 
@@ -41,4 +41,8 @@
             <button type="submit" class="btn btn-success my-3" (click)="submit()">Submit</button>
         </div>
     </div>
+</div>
+
+<div *ngIf = "!auth.loggedIn">
+    Sign in or Create an account
 </div>

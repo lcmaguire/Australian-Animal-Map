@@ -24,7 +24,6 @@ export class HomeComponent implements OnInit {
     const querySnapshot = await getDocs(collection(this.firestore, "types"));
     querySnapshot.forEach(async (doc) => {
       let t = { id: doc.id, ...doc.data(), imgURL: await this.getURL(doc.data().storageReference)}
-      console.log(t)
       this.types.push(t)
     });
   }

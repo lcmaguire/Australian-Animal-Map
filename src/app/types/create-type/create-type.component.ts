@@ -24,8 +24,8 @@ export class CreateTypeComponent implements OnInit {
   }
 
   async submit() {
-    const storageRef = ref(this.storage, `animal/${this.selectedFile.name}`);
-    this.animal.storageReference = `animal/${this.selectedFile.name}`;
+    this.animal.storageReference = `type/${this.selectedFile.name}`;
+    const storageRef = ref(this.storage, this.animal.storageReference);
     uploadBytes(storageRef, this.selectedFile).then(async (snapshot) => {
       let res = await addDoc(collection(this.firestore, "types"),
         this.animal
@@ -42,6 +42,5 @@ export class CreateTypeComponent implements OnInit {
 
   selectFile(event: any): void {
     this.selectedFile = event.target.files[0];
-    console.log(this.selectedFile)
   }
 }
