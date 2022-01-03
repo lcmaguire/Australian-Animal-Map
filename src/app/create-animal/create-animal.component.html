@@ -1,41 +1,44 @@
-<div class="container">
-    <h1>Add Animal Sighting</h1>
+<div class="container pt-2">
+    <div class="row">
+        <h1>Add Animal Sighting</h1>
 
-    <div class="mb-3">
-        <label class="form-label">Animal Type</label>
-        <select class="form-select" (input)="sighting.type=getValue($event)">
-            <option selected>Select Animal</option>
-            <option *ngFor="let t of types" [value]="t">{{t}}</option>
-        </select>
-    </div>
+        <div class="mb-3">
+            <label class="form-label">Animal Type</label>
+            <select class="form-select" (input)="sighting.type=getValue($event)">
+                <option selected>Select Animal</option>
+                <option *ngFor="let t of types" [value]="t">{{t}}</option>
+            </select>
+        </div>
 
-    <!-- TODO add in number of animals seen-->
+        <!-- TODO add in number of animals seen-->
 
-    <div class="mb-3">
-        <label class="form-label">Description</label>
-        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
-            (input)="sighting.description=getValue($event)" placeholder=""></textarea>
-    </div>
+        <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
+                (input)="sighting.description=getValue($event)" placeholder=""></textarea>
+        </div>
 
-    <div class="mb-3">
-        <label for="formFile" class="form-label">Upload Photo of animal sighting</label>
-        <input class="form-control" type="file" id="formFile" (change)="selectFile($event)"  accept="image/png, image/jpeg">
-    </div>
+        <div class="mb-3">
+            <label for="formFile" class="form-label">Upload Photo of animal sighting</label>
+            <input class="form-control" type="file" id="formFile" (change)="selectFile($event)"
+                accept="image/png, image/jpeg">
+        </div>
 
-    <label  class="form-label">Drag pin to sighting location</label>
-    <google-map #map width="100%" height="400px" [options]="options">
-        <map-marker [options]="markerPosition" (mapDragend)="drag($event)"></map-marker>
-    </google-map>
+        <label class="form-label">Drag pin to sighting location</label>
+        <google-map #map width="100%" [options]="options">
+            <map-marker [options]="markerPosition" (mapDragend)="drag($event)"></map-marker>
+        </google-map>
 
-    <div class="alert alert-danger py-3" role="alert" *ngIf="errorMessage != ''">
-        {{errorMessage}}
-    </div>
+        <div class="alert alert-danger my-3" role="alert" *ngIf="errorMessage != ''">
+            {{errorMessage}}
+        </div>
 
-    <div class="alert alert-success py-3" role="alert" *ngIf="success">
-        Successfully added animal sighting.
-    </div>
+        <div class="alert alert-success my-3" role="alert" *ngIf="success">
+            Successfully added animal sighting.
+        </div>
 
-    <div class="d-grid">
-        <button type="submit" class="btn btn-success my-3" (click)="submit()">Submit</button>
+        <div class="d-grid">
+            <button type="submit" class="btn btn-success my-3" (click)="submit()">Submit</button>
+        </div>
     </div>
 </div>

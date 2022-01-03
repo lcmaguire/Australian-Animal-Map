@@ -1,10 +1,11 @@
 <div class="pt-2">
     <div class="row">
-        <label class="form-label">Animal Type</label>
-        <select class="form-select" (input)="type=getValue($event)">
-            <option *ngFor="let t of types" [value]="t">{{t}}</option>
-        </select>
         <div class="d-grid">
+            <label class="form-label">Animal Type</label>
+            <select class="form-select" (input)="type=getValue($event)">
+                <option *ngFor="let t of types" [value]="t">{{t}}</option>
+            </select>
+
             <button class="btn btn-success my-3" (click)="search()">Search</button>
         </div>
         <div class="col">
