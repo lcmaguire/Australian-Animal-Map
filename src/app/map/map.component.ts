@@ -71,7 +71,6 @@ export class MapComponent implements OnInit {
   }
 
   mapDragend(a: GoogleMap) {
-    console.log(a.getCenter()?.toJSON())
     this.options.center = a.getCenter()?.toJSON()
   }
 
@@ -95,7 +94,6 @@ export class MapComponent implements OnInit {
   }
 
   async handleQuery(...queries: QueryConstraint[]) {
-    console.log(queries)
     const citiesRef = collection(this.firestore, "sightings")
     const q = query(citiesRef, ...queries);
     const querySnapshot = await getDocs(q);
