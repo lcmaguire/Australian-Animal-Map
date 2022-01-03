@@ -1,37 +1,37 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-success">
-    <div class="container-fluid">
-      <a class="navbar-brand" routerLink="">PBCC</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
-        aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-        <div class="navbar-nav me-auto">
-          <a class="nav-link" routerLink="">Home</a> <!-- todo have navbar page move to active page aria-current="page" -->
-          <a class="nav-link" routerLink="/search">Search</a>
-          <a class="nav-link" routerLink="/animals">Tracked Animals</a>
-          <a class="nav-link" routerLink="/create">Add Animal Sighting</a>
-        </div>
-        
-        <span class="navbar-text float-right">
-          <div *ngIf="auth.loggedIn; then authenticated; else unauthenticated" class="text-light">
-    
-          </div>
-    
-          <ng-template #authenticated>
-            <div *ngIf="auth.loggedIn" class="text-light">
-              Welcome {{auth.user.displayName}} | <a routerLink = "" class="text-light" (click)="auth.signOut()">Sign Out</a>
-            </div>
-          </ng-template>
-    
-          <ng-template #unauthenticated>
-            <div class="text-light">
-              <a (click)="auth.googleLogin()" class="text-light" routerLink = "">Sign in</a>
-            </div>
-          </ng-template>
-        </span>
+  <div class="container-fluid">
+    <a class="navbar-brand" routerLink="">Australian Animal Map</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+      aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav me-auto">
+        <!-- todo have navbar page move to active page aria-current="page" -->
+        <a class="nav-link" routerLink="/search">Map</a>
+        <a class="nav-link" routerLink="/animals">Tracked Animals</a>
+        <a class="nav-link" routerLink="/create">Add Sighting</a>
+        <a class = "nav-link" href = "https://github.com/lcmaguire/Australian-Animal-Map" target="_blank" ><i class="bi bi-github"></i> Source Code</a>
       </div>
+
+      <span class="navbar-text float-right">
+        <div *ngIf="auth.loggedIn; then authenticated; else unauthenticated" class="text-light">
+
+        </div>
+
+        <ng-template #authenticated>
+          <div *ngIf="auth.loggedIn" class="text-light">
+            Welcome {{auth.user.displayName}} | <a routerLink="" class="text-light" (click)="auth.signOut()">Sign
+              Out</a>
+          </div>
+        </ng-template>
+
+        <ng-template #unauthenticated>
+          <div class="text-light">
+            <a (click)="auth.googleLogin()" class="text-light" routerLink="">Sign in</a>
+          </div>
+        </ng-template>
+      </span>
     </div>
-  </nav>
-  
-  
+  </div>
+</nav>

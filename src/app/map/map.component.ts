@@ -44,7 +44,7 @@ export class MapComponent implements OnInit {
 
   async getSightings() {
     this.markerOptions = []
-    this.handleQuery(...this.queryBuilder())
+    this.handleQuery(...this.buildQuery())
   }
 
   async getTypes() {
@@ -84,7 +84,7 @@ export class MapComponent implements OnInit {
     this.getSightings()
   }
 
-  queryBuilder(): QueryConstraint[] { // rename buildQuery
+  buildQuery(): QueryConstraint[] { // rename buildQuery
     // based upon query make arr and return
     let queries: QueryConstraint[] = [];
     if (this.type != "") {
